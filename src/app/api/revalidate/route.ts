@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const slug = post_name === "home" ? "" : post_name;
 
     // Always purge the GraphQL fetch cache tag when content updates
-    revalidateTag("wpchange");
+    revalidateTag("wpchange", "default");
 
     if (post_type === "page" && post_status === "publish") {
       revalidatePath(`/${slug}/`);

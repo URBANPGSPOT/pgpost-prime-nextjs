@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 const SKIP_PATHS = ["/api", "/_next/static", "/_next/image", "/favicon.ico"];
 const STATIC_FILE_REGEX = /\.(png|jpg|jpeg|gif|svg|ico|webp|css|js|woff|woff2|ttf|json|txt|xml)$/;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip middleware logic for API routes, Next.js assets, and static files
