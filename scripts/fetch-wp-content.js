@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const API_URL = process.env.WORDPRESS_API_URL || "http://localhost:8081/graphql";
+const API_URL = process.env.WORDPRESS_API_URL || "https://cms.pgspot.co.in/graphql";
 
 async function fetchWpContent() {
   const query = `

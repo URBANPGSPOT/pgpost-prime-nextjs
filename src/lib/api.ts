@@ -1,6 +1,6 @@
-const API_URL = process.env.WORDPRESS_API_URL || "http://localhost:8081/graphql";
-const BASE_URL = process.env.WORDPRESS_BASE_URL || "http://localhost:8081";
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3008";
+const API_URL = process.env.WORDPRESS_API_URL || "https://cms.pgspot.co.in/graphql";
+const BASE_URL = process.env.WORDPRESS_BASE_URL || "https://cms.pgspot.co.in";
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://pgspot.co.in";
 
 /**
  * Recursively replaces WordPress backend URLs with Next.js frontend URLs,
