@@ -22,7 +22,7 @@ function loadEnv() {
 }
 loadEnv();
 
-const API_URL = process.env.WORDPRESS_API_URL || "http://localhost:8081/graphql";
+const API_URL = process.env.WORDPRESS_API_URL || "https://wp.pgspot.co.in/graphql";
 
 async function fetchWpContent() {
   const query = `

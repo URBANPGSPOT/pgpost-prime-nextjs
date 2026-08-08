@@ -1,18 +1,25 @@
-const API_URL = process.env.WORDPRESS_API_URL || "https://cms.pgspot.co.in/graphql";
-const BASE_URL = process.env.WORDPRESS_BASE_URL || "https://cms.pgspot.co.in";
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://pgspot.co.in";
+const API_URL = process.env.WORDPRESS_API_URL || "https://wp.pgspot.co.in/graphql";
+const BASE_URL = (process.env.WORDPRESS_BASE_URL || "https://wp.pgspot.co.in").replace(/\/+$/, "");
+const FRONTEND_URL = (process.env.NEXT_PUBLIC_FRONTEND_URL || "https://pgspot.co.in").replace(/\/+$/, "");
 
 /**
  * Recursively replaces WordPress backend URLs with Next.js frontend URLs,
- * but preserves media/upload URLs so they are served correctly.
+ * while strictly preserving all media, upload, asset, and API URLs.
+ * Also converts any stale localhost URLs to the live WordPress base URL.
  */
 export function replaceUrlsRecursive<T>(data: T): T {
   if (!data) return data;
   if (typeof data === "string") {
+    // 1. Convert any leftover localhost:8081, localhost:8000, or 127.0.0.1 URLs to live WordPress media URL
+    let updated = data.replace(
+      /https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?\/wp-content\//g,
+      `${BASE_URL}/wp-content/`
+    );
+
+    // 2. Replace WordPress backend URLs with frontend domain, but never touch wp-content, wp-includes, or wp-json
     const escapedBase = BASE_URL.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    // Matches the base URL but NOT when followed by /wp-content/
-    const regex = new RegExp(`${escapedBase}(?!/wp-content/)`, "g");
-    return data.replace(regex, FRONTEND_URL) as unknown as T;
+    const regex = new RegExp(`${escapedBase}(?!\/(?:wp-content|wp-includes|wp-json))`, "g");
+    return updated.replace(regex, FRONTEND_URL) as unknown as T;
   }
   if (Array.isArray(data)) {
     return data.map((item) => replaceUrlsRecursive(item)) as unknown as T;
