@@ -23,7 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 
-# vercel
+# local env files
+.env*.local
 .vercel
 
 # typescript
