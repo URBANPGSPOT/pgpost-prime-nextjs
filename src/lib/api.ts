@@ -2,9 +2,11 @@ const API_URL = process.env.WORDPRESS_API_URL || "http://localhost:8081/graphql"
 const BASE_URL = process.env.WORDPRESS_BASE_URL || "http://localhost:8081";
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3008";
 
+const WP_MEDIA_URL = process.env.WORDPRESS_MEDIA_URL || "https://wp.pgspot.co.in";
+
 /**
  * Recursively replaces WordPress backend URLs with Next.js frontend URLs,
- * but preserves media/upload URLs so they are served correctly.
+ * and ensures all media/upload URLs point directly to the WordPress media server (https://wp.pgspot.co.in).
  */
 export function replaceUrlsRecursive<T>(data: T): T {
   if (!data) return data;
@@ -13,6 +15,14 @@ export function replaceUrlsRecursive<T>(data: T): T {
     // Matches the base URL but NOT when followed by /wp-content/
     const regex = new RegExp(`${escapedBase}(?!/wp-content/)`, "g");
     let str = data.replace(regex, FRONTEND_URL);
+
+    // Redirect all uploaded images to the actual WordPress media domain
+    str = str.replace(/https?:\/\/(www\.)?pgspot\.co\.in\/wp-content\/uploads\//g, `${WP_MEDIA_URL}/wp-content/uploads/`);
+    str = str.replace(/http:\/\/localhost:8081\/wp-content\/uploads\//g, `${WP_MEDIA_URL}/wp-content/uploads/`);
+    str = str.replace(/http:\/\/wp\.pgspot\.co\.in\/wp-content\/uploads\//g, `${WP_MEDIA_URL}/wp-content/uploads/`);
+    str = str.replace(/(src|srcset)=["']\/wp-content\/uploads\//g, `$1="${WP_MEDIA_URL}/wp-content/uploads/`);
+
+    // Contact sanitization
     str = str.replace(/9876543210/g, "9099291915");
     str = str.replace(/98765 43210/g, "90992 91915");
     str = str.replace(/hello@pgspot\.in/g, "urbanpgspot@gmail.com");
