@@ -9,7 +9,16 @@ interface PropertyProps {
   params: Promise<{ slug: string }> | { slug: string };
 }
 
-const mockProperties: Record<string, any> = {
+interface PropertyItem {
+  title: string;
+  content: string;
+  price: string;
+  location: string;
+  imageUrl: string;
+  amenities: string[];
+}
+
+const mockProperties: Record<string, PropertyItem> = {
   "mansi-residency": {
     title: "PGSPOT Mansi Residency",
     content: `
@@ -103,15 +112,15 @@ export async function generateMetadata({ params }: PropertyProps): Promise<Metad
 
 export async function generateStaticParams() {
   const properties = await getAllProperties();
-  const paths = properties.map((prop: any) => ({
+  const paths: { slug: string }[] = properties.map((prop: { slug: string }) => ({
     slug: prop.slug,
   }));
 
   // Add hardcoded fallback page paths so they build successfully
-  if (!paths.some((p: any) => p.slug === "mansi-residency")) {
+  if (!paths.some((p: { slug: string }) => p.slug === "mansi-residency")) {
     paths.push({ slug: "mansi-residency" });
   }
-  if (!paths.some((p: any) => p.slug === "thaltej-smart-living")) {
+  if (!paths.some((p: { slug: string }) => p.slug === "thaltej-smart-living")) {
     paths.push({ slug: "thaltej-smart-living" });
   }
   
@@ -151,6 +160,10 @@ export default async function PropertyPage({ params }: PropertyProps) {
     ? ["Premium Suite", "Single Occupancy", "Full Boarding", "Gym Access"]
     : ["Premium Studio", "Gym Access", "24/7 Security", "Rooftop Cafe"]);
 
+  const mapUrl = slug === "mansi-residency" 
+    ? "https://share.google/khKflKUlmyjLnoTBu" 
+    : "https://share.google/pMMexZftjohzZWvHA";
+
   if (content && content.includes("<section")) {
     return (
       <div className="w-full">
@@ -181,9 +194,21 @@ export default async function PropertyPage({ params }: PropertyProps) {
               {title}
             </h1>
             
-            <div className="flex items-center gap-2 text-sm text-slate-500 mb-8">
-              <MapPin className="w-4 h-4 text-amber-500" />
-              <span>{location}</span>
+            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-8">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-amber-500" />
+                <span>{location}</span>
+              </div>
+              <span>•</span>
+              <a
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#e0b21a] font-semibold hover:underline inline-flex items-center gap-1"
+              >
+                <span>View on Google Maps</span>
+                <span>↗</span>
+              </a>
             </div>
 
             {/* Featured Image */}
@@ -254,7 +279,7 @@ export default async function PropertyPage({ params }: PropertyProps) {
               </Link>
 
               <a
-                href="tel:+919876543210"
+                href="tel:+919099291915"
                 className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 hover:bg-slate-50 py-4 text-sm font-bold text-slate-700 transition-all duration-200"
               >
                 <Phone className="w-4 h-4" />

@@ -6,49 +6,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { post_name, post_type, post_status } = body;
 
-    // Always purge the GraphQL fetch cache tag when content updates
-    revalidateTag("wpchange", "max");
+    if (!post_name) {
+      return NextResponse.json({ message: "Missing post_name parameter" }, { status: 400 });
+    }
+
+    // Always revalidate sitemaps
     revalidatePath("/sitemap*");
 
     const slug = post_name === "home" ? "" : post_name;
 
+    // Always purge the GraphQL fetch cache tag when content updates
+    revalidateTag("wpchange", "default");
+
     if (post_type === "page" && post_status === "publish") {
-      if (slug) {
-        revalidatePath(`/${slug}`);
-        revalidatePath(`/${slug}/`);
-      }
+      revalidatePath(`/${slug}/`);
       revalidatePath("/");
     } else if (post_type === "post" && post_status === "publish") {
-      if (slug) {
-        revalidatePath(`/blog/${slug}`);
-        revalidatePath(`/blog/${slug}/`);
-      }
-      revalidatePath("/blogs");
-      revalidatePath("/blogs/");
-      revalidatePath("/blog");
+      revalidatePath(`/blog/${slug}/`);
       revalidatePath("/blog/");
       revalidatePath("/category/*");
       revalidatePath("/author/*");
-    } else if (post_type === "property" && post_status === "publish") {
-      if (slug) {
-        revalidatePath(`/properties/${slug}`);
-        revalidatePath(`/properties/${slug}/`);
-      }
-      revalidatePath("/properties");
-      revalidatePath("/properties/");
-      revalidatePath("/");
-    } else if (post_type === "attachment") {
-      // Revalidate all main static pages when media/image is updated
-      revalidatePath("/");
-      revalidatePath("/blogs");
-      revalidatePath("/blogs/");
-      revalidatePath("/about-us/");
-      revalidatePath("/contact-us/");
-      revalidatePath("/properties/[slug]", "page");
-      revalidatePath("/[uid]", "page");
-    } else {
-      // Catch-all revalidation
-      revalidatePath("/");
     }
 
     return NextResponse.json({ revalidated: true, now: Date.now(), body });

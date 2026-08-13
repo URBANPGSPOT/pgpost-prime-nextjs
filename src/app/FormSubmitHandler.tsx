@@ -98,9 +98,8 @@ export default function FormSubmitHandler() {
       }
 
       try {
-        // Submit to live WordPress API endpoint
-        const wpBase = process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://wp.pgspot.co.in";
-        const response = await fetch(`${wpBase.replace(/\/+$/, "")}/wp-json/pgspot/v1/lead`, {
+        // Submit directly to local WordPress API endpoint
+        const response = await fetch("http://localhost:8081/wp-json/pgspot/v1/lead", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -118,7 +117,7 @@ export default function FormSubmitHandler() {
         }
       } catch (err) {
         console.error("Form submission error:", err);
-        alert("Could not connect to the server. Please try again or contact us directly.");
+        alert("Could not connect to the server. Please make sure WordPress is running on port 8081.");
       } finally {
         if (submitButton) {
           submitButton.disabled = false;

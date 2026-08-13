@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
-const wordpressBaseUrl = process.env.WORDPRESS_BASE_URL || "https://wp.pgspot.co.in";
+const wordpressBaseUrl = process.env.WORDPRESS_BASE_URL || "http://localhost:8081";
 
-let wordpressHost = "wp.pgspot.co.in";
-let wordpressProtocol: 'http' | 'https' = "https";
+let wordpressHost = "localhost";
+let wordpressProtocol: 'http' | 'https' = "http";
 let wordpressPort = "";
 
 try {
@@ -25,21 +25,6 @@ const nextConfig: NextConfig = {
         protocol: wordpressProtocol,
         hostname: wordpressHost,
         port: wordpressPort ? wordpressPort : undefined,
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "wp.pgspot.co.in",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "cms.pgspot.co.in",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
         pathname: "/**",
       },
     ],

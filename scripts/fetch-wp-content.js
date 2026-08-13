@@ -1,28 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Simple parser for local .env files without extra dependencies
-function loadEnv() {
-  const envFiles = ['.env.local', '.env'];
-  for (const file of envFiles) {
-    const filePath = path.join(__dirname, '..', file);
-    if (fs.existsSync(filePath)) {
-      const lines = fs.readFileSync(filePath, 'utf8').split('\n');
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
-          const [key, ...values] = trimmed.split('=');
-          if (!process.env[key.trim()]) {
-            process.env[key.trim()] = values.join('=').trim();
-          }
-        }
-      }
-    }
-  }
-}
-loadEnv();
-
-const API_URL = process.env.WORDPRESS_API_URL || "https://wp.pgspot.co.in/graphql";
+const API_URL = process.env.WORDPRESS_API_URL || "http://localhost:8081/graphql";
 
 async function fetchWpContent() {
   const query = `
