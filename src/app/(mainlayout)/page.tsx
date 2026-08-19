@@ -96,6 +96,22 @@ export default async function HomePage() {
             content = content.substring(0, faqSectionStart) + revHtml + content.substring(faqSectionStart);
           }
         }
+
+        // 9. Replace old Instagram section with complete 6-card @pg.spot Instagram Feed (Dubey Task 8)
+        const instaStart = tpl.indexOf("<!-- Instagram Feed Section -->");
+        const instaEnd = tpl.indexOf("<!-- FAQ Section");
+        if (instaStart !== -1 && instaEnd !== -1) {
+          const instaHtml = tpl.substring(instaStart, instaEnd);
+          if (content.includes("Follow Our Community") || content.includes("@pg.spot")) {
+            content = content.replace(
+              /<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?(?:Follow Our Community|@pg\.spot)[\s\S]*?<\/section>/gi,
+              instaHtml
+            );
+          } else if (content.includes("Common Questions")) {
+            const faqSectionStart = content.lastIndexOf("<section", content.indexOf("Common Questions"));
+            content = content.substring(0, faqSectionStart) + instaHtml + content.substring(faqSectionStart);
+          }
+        }
       }
     } catch (e) {
       // ignore
