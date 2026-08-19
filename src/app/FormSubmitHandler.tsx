@@ -54,11 +54,11 @@ export default function FormSubmitHandler() {
       });
     };
 
-    // 2. Interactive FAQ Accordion Click Handler (Bulletproof for all markups)
+    // 2. Interactive FAQ Accordion Click Handler (Clean Open & Close Toggle)
     const handleFaqClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
-      // Look for any button inside an accordion / FAQ section
+      // Match trigger button
       const trigger = target.closest(
         ".faq-trigger, button[data-radix-collection-item], button[aria-controls], [data-orientation='vertical'] button, h3 button, .faq-item button"
       ) as HTMLButtonElement | null;
@@ -68,43 +68,40 @@ export default function FormSubmitHandler() {
         e.stopPropagation();
         
         const item = trigger.closest(".faq-item, [data-state], [data-orientation='vertical'] > div, div.border-b");
-        let panel = (item?.querySelector(".faq-panel, div[role='region'], div[id^='radix-']") || 
-                     (trigger.getAttribute("aria-controls") ? document.getElementById(trigger.getAttribute("aria-controls")!) : null) ||
-                     trigger.parentElement?.parentElement?.querySelector("div[role='region'], .faq-panel")) as HTMLElement | null;
+        const panel = (item?.querySelector(".faq-panel, div[role='region'], div[id^='radix-']") || 
+                       (trigger.getAttribute("aria-controls") ? document.getElementById(trigger.getAttribute("aria-controls")!) : null) ||
+                       trigger.parentElement?.parentElement?.querySelector("div[role='region'], .faq-panel")) as HTMLElement | null;
 
         if (panel) {
-          const isCurrentlyHidden = panel.classList.contains("hidden") ||
-            panel.hasAttribute("hidden") ||
-            panel.getAttribute("data-state") === "closed" ||
-            panel.style.display === "none";
+          const isAlreadyOpen = trigger.getAttribute("data-state") === "open" || 
+                                panel.getAttribute("data-state") === "open" ||
+                                (!panel.classList.contains("hidden") && !panel.hasAttribute("hidden") && panel.style.display === "block");
 
-          if (isCurrentlyHidden) {
-            panel.classList.remove("hidden");
-            panel.removeAttribute("hidden");
-            panel.setAttribute("data-state", "open");
+          if (isAlreadyOpen) {
+            // CLOSE
+            panel.style.display = "none";
+            panel.classList.add("hidden");
+            panel.setAttribute("hidden", "");
+            panel.setAttribute("data-state", "closed");
+            trigger.setAttribute("data-state", "closed");
+            trigger.setAttribute("aria-expanded", "false");
+            
+            const chevron = trigger.querySelector("svg, .faq-chevron") as HTMLElement | null;
+            if (chevron) chevron.style.transform = "rotate(0deg)";
+          } else {
+            // OPEN
             panel.style.display = "block";
             panel.style.visibility = "visible";
             panel.style.opacity = "1";
             panel.style.maxHeight = "none";
+            panel.classList.remove("hidden");
+            panel.removeAttribute("hidden");
+            panel.setAttribute("data-state", "open");
             trigger.setAttribute("data-state", "open");
             trigger.setAttribute("aria-expanded", "true");
-            trigger.parentElement?.setAttribute("data-state", "open");
-            trigger.closest("[data-state]")?.setAttribute("data-state", "open");
             
-            const chevron = trigger.querySelector("svg, .faq-chevron");
-            if (chevron) (chevron as HTMLElement).style.transform = "rotate(180deg)";
-          } else {
-            panel.classList.add("hidden");
-            panel.setAttribute("hidden", "");
-            panel.setAttribute("data-state", "closed");
-            panel.style.display = "none";
-            trigger.setAttribute("data-state", "closed");
-            trigger.setAttribute("aria-expanded", "false");
-            trigger.parentElement?.setAttribute("data-state", "closed");
-            trigger.closest("[data-state]")?.setAttribute("data-state", "closed");
-            
-            const chevron = trigger.querySelector("svg, .faq-chevron");
-            if (chevron) (chevron as HTMLElement).style.transform = "rotate(0deg)";
+            const chevron = trigger.querySelector("svg, .faq-chevron") as HTMLElement | null;
+            if (chevron) chevron.style.transform = "rotate(180deg)";
           }
         }
       }
