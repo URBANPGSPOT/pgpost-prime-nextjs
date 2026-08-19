@@ -53,7 +53,7 @@ export default async function MainLayout({
             {/* Social Icons */}
             <div className="flex items-center gap-3">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/pg.spot"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
@@ -117,12 +117,12 @@ export default async function MainLayout({
               </li>
               <li>
                 <Link href="/properties/mansi-residency/" className="hover:text-[#f0c229] transition-colors">
-                  Mansi Residency
+                  PGSPOT Mansi (Boys)
                 </Link>
               </li>
               <li>
                 <Link href="/properties/thaltej-smart-living/" className="hover:text-[#f0c229] transition-colors">
-                  Thaltej Smart Living
+                  PGSPOT Thaltej (Girls)
                 </Link>
               </li>
               <li>
@@ -152,7 +152,7 @@ export default async function MainLayout({
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <h4 className="text-[#f0c229] text-xs font-black tracking-widest uppercase font-heading">
-                PGSPOT Mansi
+                PGSPOT Mansi (Boys)
               </h4>
               <a
                 href="https://share.google/khKflKUlmyjLnoTBu"
@@ -167,7 +167,7 @@ export default async function MainLayout({
             <p className="text-xs text-zinc-400">Mansi Circle, Satellite, Ahmedabad</p>
             <div className="w-full h-36 rounded-xl overflow-hidden border border-zinc-800 shadow-md">
               <iframe
-                title="PGSPOT Mansi Location"
+                title="PGSPOT Mansi (Boys) Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14686.84501659223!2d72.5204!3d23.0305!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84f5091c5305%3A0xb308a0d4c9d5d7cb!2sMansi%20Circle%2C%20Ahmedabad!5e0!3m2!1sen!2sin!4v1718134567890!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
@@ -183,7 +183,7 @@ export default async function MainLayout({
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <h4 className="text-[#f0c229] text-xs font-black tracking-widest uppercase font-heading">
-                PGSPOT Thaltej
+                PGSPOT Thaltej (Girls)
               </h4>
               <a
                 href="https://share.google/pMMexZftjohzZWvHA"

@@ -110,7 +110,7 @@ export default function Header() {
                       : "text-slate-700 hover:bg-slate-50 hover:text-[#f0c229]"
                   }`}
                 >
-                  Mansi Residency
+                  PGSPOT Mansi (Boys)
                 </Link>
                 <Link
                   href="/properties/thaltej-smart-living/"
@@ -120,7 +120,7 @@ export default function Header() {
                       : "text-slate-700 hover:bg-slate-50 hover:text-[#f0c229]"
                   }`}
                 >
-                  Thaltej Smart Living
+                  PGSPOT Thaltej (Girls)
                 </Link>
               </div>
             </div>
@@ -301,7 +301,7 @@ export default function Header() {
                       : "text-slate-600 hover:text-[#f0c229] hover:bg-slate-50"
                   }`}
                 >
-                  Mansi Residency
+                  PGSPOT Mansi (Boys)
                 </Link>
                 <Link
                   href="/properties/thaltej-smart-living/"
@@ -312,7 +312,7 @@ export default function Header() {
                       : "text-slate-600 hover:text-[#f0c229] hover:bg-slate-50"
                   }`}
                 >
-                  Thaltej Smart Living
+                  PGSPOT Thaltej (Girls)
                 </Link>
               </div>
             )}

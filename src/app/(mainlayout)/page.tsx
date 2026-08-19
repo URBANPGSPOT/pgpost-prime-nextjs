@@ -1,10 +1,88 @@
 import { getPageBySlug } from "@/lib/api";
 import parse from "html-react-parser";
+import fs from "fs";
+import path from "path";
 
 export default async function HomePage() {
-  const page = await getPageBySlug("home");
+  let content = "";
 
-  if (!page) {
+  // 1. Fetch live WordPress content first
+  try {
+    const page = await getPageBySlug("home");
+    content = page?.content || "";
+  } catch (e) {
+    console.error("Error fetching homepage from WordPress:", e);
+  }
+
+  // 2. Fallback to local template only if WordPress content is not found
+  if (!content) {
+    try {
+      const templatePath = path.join(process.cwd(), "src/templates/homepage.html");
+      if (fs.existsSync(templatePath)) {
+        content = fs.readFileSync(templatePath, "utf-8");
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  if (content) {
+    // 1. Strip Gutenberg block comments
+    content = content.replace(/<!--\s*\/?wp:[^>]*-->/g, "").trim();
+
+    // 2. Hide "Can't Visit in Person?" section (Dubey Task 7)
+    content = content.replace(/<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Visit in Person[\s\S]*?<\/section>/gi, "");
+
+    // 3. Add (Boys) and (Girls) labels to Mansi and Thaltej (Dubey Task 6)
+    content = content.replace(/PGSPOT Mansi(?!\s*\((?:Boys|Girls)\))/g, "PGSPOT Mansi (Boys)");
+    content = content.replace(/Mansi Residency(?!\s*\((?:Boys|Girls)\))/g, "Mansi Residency (Boys)");
+    content = content.replace(/PGSPOT Thaltej(?!\s*\((?:Boys|Girls)\))/g, "PGSPOT Thaltej (Girls)");
+    content = content.replace(/Thaltej Smart Living(?!\s*\((?:Boys|Girls)\))/g, "Thaltej Smart Living (Girls)");
+
+    // 4. Update Mansi (Boys) ₹11,000 & Thaltej (Girls) ₹9,000 with (Starting From) (Dubey Task 5)
+    content = content.replace(
+      /(?:₹|&#8377;|INR\s*)12,500(?:\s*<span[^>]*>\/(?:mo|month)<\/span>)?/g,
+      '₹11,000<span class="text-xs font-semibold text-muted-foreground">/mo</span><span class="text-[11px] font-bold text-amber-600 block tracking-tight -mt-0.5">(Starting From)</span>'
+    );
+    content = content.replace(
+      /(?:₹|&#8377;|INR\s*)14,000(?:\s*<span[^>]*>\/(?:mo|month)<\/span>)?/g,
+      '₹9,000<span class="text-xs font-semibold text-muted-foreground">/mo</span><span class="text-[11px] font-bold text-amber-600 block tracking-tight -mt-0.5">(Starting From)</span>'
+    );
+
+    // 5. Ensure Property Links point to canonical Next.js property routes
+    content = content.replace(/href=["']\/mansi\/?["']/g, 'href="/properties/mansi-residency/"');
+    content = content.replace(/href=["']\/thaltej\/?["']/g, 'href="/properties/thaltej-smart-living/"');
+
+    // 6. Update Instagram handle and URLs (Dubey Task 8)
+    content = content.replace(/@pgspot(?:\.in)?/g, "@pg.spot");
+    content = content.replace(/href=["']https?:\/\/(?:www\.)?instagram\.com\/?["']/g, 'href="https://www.instagram.com/pg.spot"');
+
+    // 7. Remove aspect-[4/3] lg:aspect-[4/5] object-cover from banner images
+    content = content.replace(/aspect-\[4\/3\]\s*lg:aspect-\[4\/5\]\s*object-cover/g, "h-auto rounded-3xl");
+    content = content.replace(/aspect-\[4\/3\]\s*lg:aspect-\[4\/5\]/g, "h-auto");
+
+    // 7. Replace broken/empty WordPress FAQ section with complete, interactive FAQ accordion (Dubey Task 1)
+    try {
+      const templatePath = path.join(process.cwd(), "src/templates/homepage.html");
+      if (fs.existsSync(templatePath)) {
+        const tpl = fs.readFileSync(templatePath, "utf-8");
+        const faqIdx = tpl.indexOf("Common Questions");
+        if (faqIdx !== -1) {
+          const faqStart = tpl.lastIndexOf("<section", faqIdx);
+          const faqEnd = tpl.indexOf("</section>", faqIdx) + 10;
+          const fullFaqHtml = tpl.substring(faqStart, faqEnd);
+          content = content.replace(
+            /<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Common Questions[\s\S]*?<\/section>/gi,
+            fullFaqHtml
+          );
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  if (!content) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 font-heading">
@@ -14,35 +92,13 @@ export default async function HomePage() {
           Your headless Next.js frontend is connected to WordPress, but we couldn't find a page with the slug{" "}
           <code className="px-1.5 py-0.5 rounded bg-slate-800 text-teal-400 font-mono text-sm">home</code>.
         </p>
-        <div className="premium-card p-8 rounded-2xl max-w-lg mx-auto text-left border border-slate-800">
-          <h3 className="text-lg font-bold text-white mb-4 font-heading">Next Steps:</h3>
-          <ol className="list-decimal list-inside space-y-3 text-sm text-slate-400">
-            <li>
-              Open your WordPress admin dashboard (e.g., at{" "}
-              <code className="px-1 py-0.5 rounded bg-slate-900 text-slate-300 font-mono">
-                http://localhost:8081/wp-admin/
-              </code>
-              ).
-            </li>
-            <li>
-              Create a new Page with the title "Home" and slug{" "}
-              <code className="px-1 py-0.5 rounded bg-slate-900 text-slate-300 font-mono">home</code>.
-            </li>
-            <li>Publish the page, and then refresh this frontend.</li>
-          </ol>
-        </div>
       </div>
     );
   }
 
   return (
     <div className="w-full">
-      {page.content ? (
-        parse(page.content)
-      ) : (
-        <p className="text-slate-500 italic text-center py-20">No content published yet.</p>
-      )}
+      {parse(content)}
     </div>
   );
-
 }

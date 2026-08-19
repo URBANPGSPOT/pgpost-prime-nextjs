@@ -20,67 +20,58 @@ interface PropertyItem {
 
 const mockProperties: Record<string, PropertyItem> = {
   "mansi-residency": {
-    title: "PGSPOT Mansi Residency",
+    title: "PGSPOT Mansi (Boys)",
     content: `
-      <p class="text-lg text-slate-600 leading-relaxed mb-6">Premium suite near Mansi Circle. Perfectly suited for working professionals seeking a quiet, upscale environment with single occupancy and full boarding options.</p>
+      <p class="text-lg text-slate-600 leading-relaxed mb-6">Premium boy's suite near Mansi Circle. Perfectly suited for working professionals and students seeking a quiet, upscale environment with single/shared occupancy and full boarding options.</p>
       
       <h3 class="text-xl font-bold text-slate-900 mt-8 mb-4">Key Amenities</h3>
       <ul class="space-y-3">
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> High-Speed Broadband WiFi (Up to 200 Mbps)</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Hygienic Home-Style Meal Plans</li>
+        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> High-Speed Broadband WiFi (Up to 300 Mbps)</li>
+        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Hygienic Home-Style 3-Time Meal Plans</li>
         <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> 24/7 Professional Housekeeping</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Biometric Security Gate</li>
+        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Biometric Security Turnstile</li>
         <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Power Backup for Study & Office Desks</li>
       </ul>
       
       <h3 class="text-xl font-bold text-slate-900 mt-8 mb-4">Location Benefits</h3>
-      <p class="text-slate-600 leading-relaxed">Situated in the heart of Mansi Circle, this property has easy access to shopping hubs, cafes, transit points, and key business offices.</p>
+      <p class="text-slate-600 leading-relaxed">Situated in the heart of Mansi Circle, Satellite, this property has easy access to shopping hubs, cafes, transit points, and key business offices in Ahmedabad.</p>
     `,
-    price: "₹16,000",
-    location: "Mansi Circle, Ahmedabad",
+    price: "₹11,000",
+    location: "Mansi Circle, Satellite, Ahmedabad",
     imageUrl: "/assets/mansi-exterior-CwXq_r7X.jpg",
-    amenities: ["Premium Suite", "Single Occupancy", "Full Boarding", "Gym Access"]
+    amenities: ["Boys Accommodation", "Single / Shared", "Full Boarding", "Gym Access"]
   },
   "thaltej-smart-living": {
-    title: "PGSPOT Thaltej Smart Living",
+    title: "PGSPOT Thaltej (Girls)",
     content: `
-      <p class="text-lg text-slate-600 leading-relaxed mb-6">Vibrant community space near the metro. Features extensive common areas, rooftop terrace, and a dedicated study zone for students and professionals.</p>
+      <p class="text-lg text-slate-600 leading-relaxed mb-6">Modern & ultra-safe girl's co-living space near Thaltej Metro Station. Features extensive common areas, rooftop terrace, 24/7 on-site warden, and dedicated study zones.</p>
       
       <h3 class="text-xl font-bold text-slate-900 mt-8 mb-4">Key Amenities</h3>
       <ul class="space-y-3">
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Superfast WiFi Connectivity</li>
+        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Superfast Fiber WiFi Connectivity</li>
         <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Premium Studio Rooms</li>
         <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Rooftop Cafe and Terrace Lounge</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Modern Fitness Gym Access</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Biometric Entry Gates & CCTV Security</li>
+        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> 24/7 Female Warden & CCTV Security</li>
+        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Biometric Entry Gates</li>
       </ul>
       
       <h3 class="text-xl font-bold text-slate-900 mt-8 mb-4">Location Benefits</h3>
-      <p class="text-slate-600 leading-relaxed">Conveniently located near the Thaltej Metro Station, ensuring a quick and hassle-free commute to key educational institutes and offices in Ahmedabad.</p>
+      <p class="text-slate-600 leading-relaxed">Conveniently located near the Thaltej Metro Station, ensuring a quick and safe commute to key educational institutes and offices in Ahmedabad.</p>
     `,
-    price: "₹14,000",
-    location: "Thaltej, Ahmedabad",
+    price: "₹9,000",
+    location: "Near Metro, Thaltej, Ahmedabad",
     imageUrl: "/assets/thaltej-exterior-CUltz2k8.jpg",
-    amenities: ["Premium Studio", "Gym Access", "24/7 Security", "Rooftop Cafe"]
+    amenities: ["Girls Accommodation", "Studio Rooms", "24/7 Warden", "Biometric Security"]
   },
   "pgspot-thaltej": {
-    title: "PGSPOT Thaltej",
+    title: "PGSPOT Thaltej (Girls)",
     content: `
-      <p class="text-lg text-slate-600 leading-relaxed mb-6">Vibrant community space near the metro. Features extensive common areas, rooftop terrace, and a dedicated study zone for students and professionals.</p>
-      
-      <h3 class="text-xl font-bold text-slate-900 mt-8 mb-4">Key Amenities</h3>
-      <ul class="space-y-3">
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Superfast WiFi Connectivity</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Premium Studio Rooms</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Rooftop Cafe and Terrace Lounge</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Modern Fitness Gym Access</li>
-        <li class="flex items-start gap-2.5"><span class="text-amber-500 font-bold">✓</span> Biometric Entry Gates & CCTV Security</li>
-      </ul>
+      <p class="text-lg text-slate-600 leading-relaxed mb-6">Modern & ultra-safe girl's co-living space near Thaltej Metro Station. Features extensive common areas, rooftop terrace, 24/7 on-site warden, and dedicated study zones.</p>
     `,
-    price: "₹14,000",
+    price: "₹9,000",
     location: "Thaltej, Ahmedabad",
     imageUrl: "/assets/thaltej-exterior-CUltz2k8.jpg",
-    amenities: ["Premium Studio", "Gym Access", "24/7 Security"]
+    amenities: ["Girls Accommodation", "Studio Rooms", "24/7 Warden"]
   }
 };
 
@@ -151,7 +142,7 @@ export default async function PropertyPage({ params }: PropertyProps) {
 
   const title = property.title;
   const content = property.content || "";
-  const price = property.price || (slug === "mansi-residency" ? "₹16,000" : "₹14,000");
+  const price = property.price || (slug === "mansi-residency" ? "₹11,000" : "₹9,000");
   const location = property.location || (slug === "mansi-residency" ? "Mansi Circle, Ahmedabad" : "Thaltej, Ahmedabad");
   const imageUrl = isMock 
     ? property.imageUrl 
@@ -165,9 +156,29 @@ export default async function PropertyPage({ params }: PropertyProps) {
     : "https://share.google/pMMexZftjohzZWvHA";
 
   if (content && content.includes("<section")) {
+    let parsedContent = content;
+    // Hide Can't Visit in Person section
+    parsedContent = parsedContent.replace(/<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Visit in Person[\s\S]*?<\/section>/gi, "");
+    
+    // Add (Boys) and (Girls) suffix
+    parsedContent = parsedContent.replace(/PGSPOT Mansi(?!\s*\((?:Boys|Girls)\))/g, "PGSPOT Mansi (Boys)");
+    parsedContent = parsedContent.replace(/Mansi Residency(?!\s*\((?:Boys|Girls)\))/g, "Mansi Residency (Boys)");
+    parsedContent = parsedContent.replace(/PGSPOT Thaltej(?!\s*\((?:Boys|Girls)\))/g, "PGSPOT Thaltej (Girls)");
+    parsedContent = parsedContent.replace(/Thaltej Smart Living(?!\s*\((?:Boys|Girls)\))/g, "Thaltej Smart Living (Girls)");
+
+    // Update pricing with (Starting From)
+    parsedContent = parsedContent.replace(
+      /₹12,500(?:\s*<span[^>]*>\/mo<\/span>)?/g,
+      '₹11,000<span class="text-xs font-semibold text-muted-foreground">/mo</span><span class="text-[11px] font-bold text-amber-600 block tracking-tight -mt-0.5">(Starting From)</span>'
+    );
+    parsedContent = parsedContent.replace(
+      /₹14,000(?:\s*<span[^>]*>\/mo<\/span>)?/g,
+      '₹9,000<span class="text-xs font-semibold text-muted-foreground">/mo</span><span class="text-[11px] font-bold text-amber-600 block tracking-tight -mt-0.5">(Starting From)</span>'
+    );
+
     return (
       <div className="w-full">
-        {parse(content)}
+        {parse(parsedContent)}
       </div>
     );
   }

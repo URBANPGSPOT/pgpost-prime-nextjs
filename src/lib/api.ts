@@ -1,7 +1,6 @@
-const API_URL = process.env.WORDPRESS_API_URL || "http://localhost:8081/graphql";
-const BASE_URL = process.env.WORDPRESS_BASE_URL || "http://localhost:8081";
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3008";
-
+const API_URL = process.env.WORDPRESS_API_URL || "https://wp.pgspot.co.in/graphql";
+const BASE_URL = (process.env.WORDPRESS_BASE_URL || "https://wp.pgspot.co.in").replace(/\/+$/, "");
+const FRONTEND_URL = (process.env.NEXT_PUBLIC_FRONTEND_URL || "https://pgspot.co.in").replace(/\/+$/, "");
 const WP_MEDIA_URL = process.env.WORDPRESS_MEDIA_URL || "https://wp.pgspot.co.in";
 
 /**
@@ -11,10 +10,22 @@ const WP_MEDIA_URL = process.env.WORDPRESS_MEDIA_URL || "https://wp.pgspot.co.in
 export function replaceUrlsRecursive<T>(data: T): T {
   if (!data) return data;
   if (typeof data === "string") {
+    // 1. Convert any leftover localhost:8081, localhost:8000, or 127.0.0.1 URLs to live WordPress media URL
+    let str = data.replace(
+      /https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?\/wp-content\//g,
+      `${WP_MEDIA_URL}/wp-content/`
+    );
+
+    // 2. Convert relative /wp-content/ to absolute WordPress URL
+    str = str.replace(
+      /(["'\s(])\/wp-content\//g,
+      `$1${WP_MEDIA_URL}/wp-content/`
+    );
+
+    // 3. Replace WordPress backend URLs with frontend domain, but never touch wp-content, wp-includes, or wp-json
     const escapedBase = BASE_URL.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    // Matches the base URL but NOT when followed by /wp-content/
     const regex = new RegExp(`${escapedBase}(?!/wp-content/)`, "g");
-    let str = data.replace(regex, FRONTEND_URL);
+    str = str.replace(regex, FRONTEND_URL);
 
     // Redirect all uploaded images to the actual WordPress media domain
     str = str.replace(/https?:\/\/(www\.)?pgspot\.co\.in\/wp-content\/uploads\//g, `${WP_MEDIA_URL}/wp-content/uploads/`);
@@ -22,10 +33,40 @@ export function replaceUrlsRecursive<T>(data: T): T {
     str = str.replace(/http:\/\/wp\.pgspot\.co\.in\/wp-content\/uploads\//g, `${WP_MEDIA_URL}/wp-content/uploads/`);
     str = str.replace(/(src|srcset)=["']\/wp-content\/uploads\//g, `$1="${WP_MEDIA_URL}/wp-content/uploads/`);
 
-    // Contact sanitization
+    // Contact & Social sanitization
     str = str.replace(/9876543210/g, "9099291915");
     str = str.replace(/98765 43210/g, "90992 91915");
     str = str.replace(/hello@pgspot\.in/g, "urbanpgspot@gmail.com");
+    str = str.replace(/@pgspot\.in/g, "@pg.spot");
+    str = str.replace(/https?:\/\/(?:www\.)?instagram\.com\/?(?=["'\s]|$)/g, "https://www.instagram.com/pg.spot");
+
+    // Hide "Can't Visit in Person?" virtual tour section (Dubey Task 7)
+    str = str.replace(/<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Visit in Person[\s\S]*?<\/section>/gi, "");
+
+    // Add (Boys) and (Girls) labels (Dubey Task 6)
+    str = str.replace(/PGSPOT Mansi(?!\s*\((?:Boys|Girls)\))/g, "PGSPOT Mansi (Boys)");
+    str = str.replace(/Mansi Residency(?!\s*\((?:Boys|Girls)\))/g, "Mansi Residency (Boys)");
+    str = str.replace(/PGSPOT Thaltej(?!\s*\((?:Boys|Girls)\))/g, "PGSPOT Thaltej (Girls)");
+    str = str.replace(/Thaltej Smart Living(?!\s*\((?:Boys|Girls)\))/g, "Thaltej Smart Living (Girls)");
+
+    // Update Pricing with (Starting From) (Dubey Task 5)
+    str = str.replace(
+      /(?:₹|&#8377;|INR\s*)12,500(?:\s*<span[^>]*>\/(?:mo|month)<\/span>)?/g,
+      '₹11,000<span class="text-xs font-semibold text-muted-foreground">/mo</span><span class="text-[11px] font-bold text-amber-600 block tracking-tight -mt-0.5">(Starting From)</span>'
+    );
+    str = str.replace(
+      /(?:₹|&#8377;|INR\s*)14,000(?:\s*<span[^>]*>\/(?:mo|month)<\/span>)?/g,
+      '₹9,000<span class="text-xs font-semibold text-muted-foreground">/mo</span><span class="text-[11px] font-bold text-amber-600 block tracking-tight -mt-0.5">(Starting From)</span>'
+    );
+
+    // Make property links canonical
+    str = str.replace(/href=["']\/mansi\/?["']/g, 'href="/properties/mansi-residency/"');
+    str = str.replace(/href=["']\/thaltej\/?["']/g, 'href="/properties/thaltej-smart-living/"');
+
+    // Remove aspect-[4/3] lg:aspect-[4/5] object-cover from banner images
+    str = str.replace(/aspect-\[4\/3\]\s*lg:aspect-\[4\/5\]\s*object-cover/g, "h-auto rounded-3xl");
+    str = str.replace(/aspect-\[4\/3\]\s*lg:aspect-\[4\/5\]/g, "h-auto");
+
     return str as unknown as T;
   }
   if (Array.isArray(data)) {
@@ -51,14 +92,20 @@ export async function fetchAPI(query: string, variables: Record<string, any> = {
     "Content-Type": "application/json",
   };
 
+  const isDev = process.env.NODE_ENV === "development";
+
   const res = await fetch(API_URL, {
     method: "POST",
     headers,
     body: JSON.stringify({ query, variables }),
-    next: {
-      revalidate: 3600,
-      tags: ["wpchange"],
-    },
+    ...(isDev
+      ? { cache: "no-store" as RequestCache }
+      : {
+          next: {
+            revalidate: 60,
+            tags: ["wpchange"],
+          },
+        }),
   });
 
   const json = await res.json();
@@ -191,8 +238,8 @@ export async function getAllPosts() {
 
 export async function getPostBySlug(slug: string) {
   const query = `
-    query GetPostBySlug($id: ID!) {
-      post(id: $id, idType: SLUG) {
+    query {
+      post(id: "${slug}", idType: SLUG) {
         id
         title
         content
@@ -213,7 +260,7 @@ export async function getPostBySlug(slug: string) {
     }
   `;
   try {
-    const data = await fetchAPI(query, { id: slug });
+    const data = await fetchAPI(query);
     return replaceUrlsRecursive(data?.post || null);
   } catch (error) {
     console.error(`Error fetching post by slug (${slug}):`, error);
@@ -224,8 +271,8 @@ export async function getPostBySlug(slug: string) {
 export async function getPageBySlug(slug: string, preview = false, previewId?: string) {
   const uri = slug === "home" ? "/" : `/${slug}/`;
   const query = `
-    query GetPageByUri($uri: ID!) {
-      page(id: $uri, idType: URI) {
+    query {
+      page(id: "${uri}", idType: URI) {
         id
         title
         content
@@ -236,7 +283,7 @@ export async function getPageBySlug(slug: string, preview = false, previewId?: s
     }
   `;
   try {
-    const data = await fetchAPI(query, { uri });
+    const data = await fetchAPI(query);
     return replaceUrlsRecursive(data?.page || null);
   } catch (error) {
     console.error(`Error fetching page by slug (${slug}):`, error);
@@ -248,8 +295,8 @@ export async function getPAGESEO(slug: string) {
   const uri = slug === "home" ? "/" : `/${slug}/`;
   try {
     const data = await fetchAPI(`
-      query GetPageSeo($uri: ID!) {
-        page(id: $uri, idType: URI) {
+      query {
+        page(id: "${uri}", idType: URI) {
           seo {
             title
             description
@@ -264,7 +311,7 @@ export async function getPAGESEO(slug: string) {
           }
         }
       }
-    `, { uri });
+    `);
     
     const seo = data?.page?.seo;
     if (!seo) return null;
@@ -286,8 +333,8 @@ export async function getPAGESEO(slug: string) {
 export async function getPropertyBySlug(slug: string) {
   const uri = `/properties/${slug}/`;
   const query = `
-    query GetPropertyByUri($uri: ID!) {
-      property(id: $uri, idType: URI) {
+    query {
+      property(id: "${uri}", idType: URI) {
         id
         title
         content
@@ -303,7 +350,7 @@ export async function getPropertyBySlug(slug: string) {
     }
   `;
   try {
-    const data = await fetchAPI(query, { uri });
+    const data = await fetchAPI(query);
     return replaceUrlsRecursive(data?.property || null);
   } catch (error) {
     console.error(`Error fetching property by slug (${slug}):`, error);
