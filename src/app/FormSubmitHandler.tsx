@@ -54,7 +54,7 @@ export default function FormSubmitHandler() {
       });
     };
 
-    // 2. Interactive FAQ Accordion Click Handler (Clean Open & Close Toggle)
+    // 2. Interactive FAQ Accordion Click Handler (Auto-close other FAQs when one opens)
     const handleFaqClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
@@ -67,6 +67,7 @@ export default function FormSubmitHandler() {
         e.preventDefault();
         e.stopPropagation();
         
+        const container = trigger.closest(".faq-container, [data-orientation='vertical']") || document;
         const item = trigger.closest(".faq-item, [data-state], [data-orientation='vertical'] > div, div.border-b");
         const panel = (item?.querySelector(".faq-panel, div[role='region'], div[id^='radix-']") || 
                        (trigger.getAttribute("aria-controls") ? document.getElementById(trigger.getAttribute("aria-controls")!) : null) ||
@@ -77,19 +78,35 @@ export default function FormSubmitHandler() {
                                 panel.getAttribute("data-state") === "open" ||
                                 (!panel.classList.contains("hidden") && !panel.hasAttribute("hidden") && panel.style.display === "block");
 
-          if (isAlreadyOpen) {
-            // CLOSE
-            panel.style.display = "none";
-            panel.classList.add("hidden");
-            panel.setAttribute("hidden", "");
-            panel.setAttribute("data-state", "closed");
-            trigger.setAttribute("data-state", "closed");
-            trigger.setAttribute("aria-expanded", "false");
-            
-            const chevron = trigger.querySelector("svg, .faq-chevron") as HTMLElement | null;
-            if (chevron) chevron.style.transform = "rotate(0deg)";
-          } else {
-            // OPEN
+          // 1. Close all open FAQs in the container first
+          const allTriggers = container.querySelectorAll(".faq-trigger, button[data-radix-collection-item], button[aria-controls], .faq-item button");
+          const allPanels = container.querySelectorAll(".faq-panel, div[role='region'], div[id^='radix-']");
+          const allChevrons = container.querySelectorAll(".faq-chevron, [data-orientation='vertical'] svg.lucide-chevron-down");
+          const allItems = container.querySelectorAll(".faq-item, [data-orientation='vertical'] > div");
+
+          allPanels.forEach((p) => {
+            (p as HTMLElement).style.display = "none";
+            p.classList.add("hidden");
+            p.setAttribute("hidden", "");
+            p.setAttribute("data-state", "closed");
+          });
+
+          allTriggers.forEach((t) => {
+            t.setAttribute("data-state", "closed");
+            t.setAttribute("aria-expanded", "false");
+          });
+
+          allItems.forEach((i) => {
+            i.setAttribute("data-state", "closed");
+          });
+
+          allChevrons.forEach((c) => {
+            (c as HTMLElement).style.transform = "rotate(0deg)";
+            (c as HTMLElement).style.transition = "transform 0.2s ease";
+          });
+
+          // 2. If it was not already open, open the clicked FAQ
+          if (!isAlreadyOpen) {
             panel.style.display = "block";
             panel.style.visibility = "visible";
             panel.style.opacity = "1";
@@ -99,9 +116,13 @@ export default function FormSubmitHandler() {
             panel.setAttribute("data-state", "open");
             trigger.setAttribute("data-state", "open");
             trigger.setAttribute("aria-expanded", "true");
+            if (item) item.setAttribute("data-state", "open");
             
             const chevron = trigger.querySelector("svg, .faq-chevron") as HTMLElement | null;
-            if (chevron) chevron.style.transform = "rotate(180deg)";
+            if (chevron) {
+              chevron.style.transform = "rotate(180deg)";
+              chevron.style.transition = "transform 0.2s ease";
+            }
           }
         }
       }

@@ -647,14 +647,14 @@
 
     <div class="faq-container w-full space-y-3">
       <!-- FAQ 1 -->
-      <div class="faq-item border border-slate-200/90 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md hover:border-accent/30 transition-all">
-        <button type="button" class="faq-trigger w-full flex items-center justify-between p-5 text-left text-base font-bold text-slate-900 hover:text-accent transition-colors bg-white">
+      <div class="faq-item border border-slate-200/90 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md hover:border-accent/30 transition-all" data-state="open">
+        <button type="button" data-state="open" aria-expanded="true" class="faq-trigger w-full flex items-center justify-between p-5 text-left text-base font-bold text-slate-900 hover:text-accent transition-colors bg-white">
           <span>What is the security deposit policy?</span>
-          <svg class="faq-chevron w-5 h-5 text-slate-500 transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="faq-chevron w-5 h-5 text-slate-500 transition-transform duration-200 shrink-0" style="transform: rotate(180deg);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        <div class="faq-panel px-5 pb-5 text-sm text-slate-600 leading-relaxed bg-white border-t border-slate-100/80 pt-3.5 hidden">
+        <div class="faq-panel px-5 pb-5 text-sm text-slate-600 leading-relaxed bg-white border-t border-slate-100/80 pt-3.5" data-state="open" style="display: block;">
           We require a refundable security deposit equal to one month&apos;s rent. This is fully refundable at the time of checkout, subject to room condition assessment and pending dues clearance.
         </div>
       </div>
