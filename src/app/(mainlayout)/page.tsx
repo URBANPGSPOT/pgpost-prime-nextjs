@@ -112,6 +112,19 @@ export default async function HomePage() {
             content = content.substring(0, faqSectionStart) + instaHtml + content.substring(faqSectionStart);
           }
         }
+
+        // 10. Ensure 4 Video Testimonials (2 Boys + 2 Girls) section with real MP4s (Vedant Task 9)
+        const vidStart = tpl.indexOf("<!-- Testimonial Videos (2 Boys + 2 Girls) -->");
+        const vidEnd = tpl.indexOf("<!-- Google Reviews Section -->");
+        if (vidStart !== -1 && vidEnd !== -1) {
+          const vidHtml = tpl.substring(vidStart, vidEnd);
+          if (content.includes("Hear From Our Residents")) {
+            content = content.replace(
+              /<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Hear From Our Residents[\s\S]*?<\/section>/gi,
+              vidHtml
+            );
+          }
+        }
       }
     } catch (e) {
       // ignore

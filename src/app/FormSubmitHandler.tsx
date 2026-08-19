@@ -154,6 +154,7 @@ export default function FormSubmitHandler() {
       if (videoCard) {
         e.preventDefault();
         const title = videoCard.getAttribute("data-video-title") || "Resident Video Story";
+        const videoSrc = videoCard.getAttribute("data-video-src") || "/videos/testimonial-boy-1.mp4";
         
         // Remove existing modal if any
         const existing = document.getElementById("pgspot-video-modal");
@@ -161,29 +162,26 @@ export default function FormSubmitHandler() {
 
         const modal = document.createElement("div");
         modal.id = "pgspot-video-modal";
-        modal.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in";
+        modal.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in";
         modal.innerHTML = `
-          <div class="relative w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-3xl overflow-hidden shadow-2xl">
-            <div class="p-4 sm:p-6 border-b border-slate-800 flex items-center justify-between">
-              <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <div class="relative w-full max-w-lg bg-slate-900 border border-slate-700 rounded-3xl overflow-hidden shadow-2xl">
+            <div class="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 ${title}
               </h3>
-              <button id="close-video-modal" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors">
+              <button id="close-video-modal" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors font-bold text-sm">
                 ✕
               </button>
             </div>
-            <div class="aspect-video w-full bg-black flex flex-col items-center justify-center p-8 text-center">
-              <div class="w-20 h-20 rounded-full bg-[#f0c229] text-slate-950 flex items-center justify-center shadow-2xl mb-4 animate-pulse">
-                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-              </div>
-              <p class="text-white font-bold text-lg mb-1">${title}</p>
-              <p class="text-slate-400 text-sm max-w-md">Resident experience recorded live at PGSPOT Ahmedabad. Guided tour available on request.</p>
-              <a href="/contact-us/" class="mt-6 inline-flex items-center gap-2 rounded-full bg-[#f0c229] hover:bg-[#e0b21a] text-slate-950 font-bold px-6 py-2.5 text-sm transition-all shadow-md">
-                Schedule an In-Person Tour &rarr;
-              </a>
+            <div class="w-full bg-black flex items-center justify-center max-h-[75vh]">
+              <video 
+                src="${videoSrc}" 
+                controls 
+                autoplay 
+                playsinline 
+                class="w-full max-h-[75vh] object-contain rounded-b-2xl shadow-inner"
+              ></video>
             </div>
           </div>
         `;
@@ -192,6 +190,8 @@ export default function FormSubmitHandler() {
 
         modal.addEventListener("click", (evt) => {
           if (evt.target === modal || (evt.target as HTMLElement).closest("#close-video-modal")) {
+            const vid = modal.querySelector("video");
+            if (vid) vid.pause();
             modal.remove();
           }
         });
