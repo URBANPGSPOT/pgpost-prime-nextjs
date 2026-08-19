@@ -39,6 +39,7 @@ export function replaceUrlsRecursive<T>(data: T): T {
     str = str.replace(/hello@pgspot\.in/g, "urbanpgspot@gmail.com");
     str = str.replace(/@pgspot\.in/g, "@pg.spot");
     str = str.replace(/https?:\/\/(?:www\.)?instagram\.com\/?(?=["'\s]|$)/g, "https://www.instagram.com/pg.spot");
+    str = str.replace(/https?:\/\/maps\.google\.com\/\?q=PGSPOT\+Ahmedabad/g, "https://g.page/r/CZznPYYSYB9oEBM/review");
 
     // Hide "Can't Visit in Person?" virtual tour section (Dubey Task 7)
     str = str.replace(/<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Visit in Person[\s\S]*?<\/section>/gi, "");

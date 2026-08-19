@@ -56,6 +56,7 @@ export default async function HomePage() {
     // 6. Update Instagram handle and URLs (Dubey Task 8)
     content = content.replace(/@pgspot(?:\.in)?/g, "@pg.spot");
     content = content.replace(/href=["']https?:\/\/(?:www\.)?instagram\.com\/?["']/g, 'href="https://www.instagram.com/pg.spot"');
+    content = content.replace(/https?:\/\/maps\.google\.com\/\?q=PGSPOT\+Ahmedabad/g, "https://g.page/r/CZznPYYSYB9oEBM/review");
 
     // 7. Remove aspect-[4/3] lg:aspect-[4/5] object-cover from banner images
     content = content.replace(/aspect-\[4\/3\]\s*lg:aspect-\[4\/5\]\s*object-cover/g, "h-auto rounded-3xl");
@@ -75,6 +76,22 @@ export default async function HomePage() {
             /<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Common Questions[\s\S]*?<\/section>/gi,
             fullFaqHtml
           );
+        }
+
+        // 8. Ensure Google Reviews Section with GMB Direct Link is present (Dubey Task 3)
+        if (!content.includes("Google Verified Reviews")) {
+          const revStart = tpl.indexOf("<!-- Google Reviews Section -->");
+          const revEnd = tpl.indexOf("<!-- Instagram Feed Section -->");
+          if (revStart !== -1 && revEnd !== -1) {
+            const revHtml = tpl.substring(revStart, revEnd);
+            if (content.includes("Follow Our Community")) {
+              const instaSectionStart = content.lastIndexOf("<section", content.indexOf("Follow Our Community"));
+              content = content.substring(0, instaSectionStart) + revHtml + content.substring(instaSectionStart);
+            } else if (content.includes("Common Questions")) {
+              const faqSectionStart = content.lastIndexOf("<section", content.indexOf("Common Questions"));
+              content = content.substring(0, faqSectionStart) + revHtml + content.substring(faqSectionStart);
+            }
+          }
         }
       }
     } catch (e) {
