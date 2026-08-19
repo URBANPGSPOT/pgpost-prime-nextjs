@@ -78,19 +78,22 @@ export default async function HomePage() {
           );
         }
 
-        // 8. Ensure Google Reviews Section with GMB Direct Link is present (Dubey Task 3)
-        if (!content.includes("Google Verified Reviews")) {
-          const revStart = tpl.indexOf("<!-- Google Reviews Section -->");
-          const revEnd = tpl.indexOf("<!-- Instagram Feed Section -->");
-          if (revStart !== -1 && revEnd !== -1) {
-            const revHtml = tpl.substring(revStart, revEnd);
-            if (content.includes("Follow Our Community")) {
-              const instaSectionStart = content.lastIndexOf("<section", content.indexOf("Follow Our Community"));
-              content = content.substring(0, instaSectionStart) + revHtml + content.substring(instaSectionStart);
-            } else if (content.includes("Common Questions")) {
-              const faqSectionStart = content.lastIndexOf("<section", content.indexOf("Common Questions"));
-              content = content.substring(0, faqSectionStart) + revHtml + content.substring(faqSectionStart);
-            }
+        // 8. Replace old dummy WordPress reviews section with official Google Verified Reviews (GMB) section (Dubey Task 3)
+        const revStart = tpl.indexOf("<!-- Google Reviews Section -->");
+        const revEnd = tpl.indexOf("<!-- Instagram Feed Section -->");
+        if (revStart !== -1 && revEnd !== -1) {
+          const revHtml = tpl.substring(revStart, revEnd);
+          if (content.includes("Loved by 500+ Residents")) {
+            content = content.replace(
+              /<section\b[^>]*>(?:(?!<\/section>)[\s\S])*?Loved by 500\+ Residents[\s\S]*?<\/section>/gi,
+              revHtml
+            );
+          } else if (content.includes("Follow Our Community")) {
+            const instaSectionStart = content.lastIndexOf("<section", content.indexOf("Follow Our Community"));
+            content = content.substring(0, instaSectionStart) + revHtml + content.substring(instaSectionStart);
+          } else if (content.includes("Common Questions")) {
+            const faqSectionStart = content.lastIndexOf("<section", content.indexOf("Common Questions"));
+            content = content.substring(0, faqSectionStart) + revHtml + content.substring(faqSectionStart);
           }
         }
       }
